@@ -435,3 +435,26 @@ function updateAge() {
 
 updateAge();
 setInterval(updateAge, 1000 * 60 * 60);
+
+const avatarWrap = document.getElementById("avatarWrap");
+
+if (avatarWrap) {
+  const isTouchDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  if (isTouchDevice) {
+    avatarWrap.addEventListener("click", event => {
+      event.stopPropagation();
+      avatarWrap.classList.toggle("is-open");
+    });
+
+    document.addEventListener("click", () => {
+      avatarWrap.classList.remove("is-open");
+    });
+
+    document.addEventListener("touchstart", event => {
+      if (!avatarWrap.contains(event.target)) {
+        avatarWrap.classList.remove("is-open");
+      }
+    }, { passive: true });
+  }
+}

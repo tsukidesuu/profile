@@ -845,3 +845,188 @@ body {
     transform: translateX(-50%) rotate(135deg);
   }
 }
+
+.avatar-wrap.is-open .about-bubble {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0) scale(1);
+}
+
+.avatar-wrap.is-open .avatar {
+  transform: translateY(-3px) scale(1.04);
+  filter: brightness(1.08);
+  box-shadow:
+    0 0 35px rgba(255, 255, 255, 0.28),
+    0 0 55px rgba(88, 101, 242, 0.35);
+}
+
+@media (max-width: 700px) {
+  .avatar-wrap.is-open .about-bubble {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  html,
+  body {
+    min-height: 100svh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .card {
+    height: auto;
+    min-height: 100svh;
+    justify-content: flex-start;
+    padding: 125px 16px 24px;
+  }
+
+  .music-player {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: min(540px, calc(100vw - 24px));
+    padding: 10px;
+    gap: 10px;
+    border-radius: 16px;
+  }
+
+  .cover {
+    width: 58px;
+    height: 58px;
+  }
+
+  .info h3 {
+    font-size: 14px;
+  }
+
+  .info p {
+    font-size: 11px;
+    margin: 3px 0 6px;
+  }
+
+  .progress {
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .controls {
+    margin-top: 7px;
+    gap: 14px;
+  }
+
+  .controls button {
+    font-size: 14px;
+  }
+
+  .volume {
+    display: none;
+  }
+
+  .avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .profile-name {
+    margin-top: 6px;
+    font-size: 15px;
+  }
+
+  .socials {
+    margin-top: 14px;
+    gap: 12px;
+  }
+
+  .socials a {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+  }
+
+  .socials i {
+    font-size: 16px;
+  }
+
+  .status-bar {
+    width: min(410px, calc(100vw - 32px));
+    min-height: 74px;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 18px;
+  }
+
+  .status-top {
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .status-name {
+    font-size: 13px;
+  }
+
+  .status-tag-img {
+    height: 20px;
+    padding: 2px 7px 2px 4px;
+    font-size: 11px;
+  }
+
+  .status-tag-img img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .presence {
+    width: 9px;
+    height: 9px;
+  }
+
+  #activityType,
+  #activityName {
+    font-size: 13px;
+  }
+
+  .status-sub {
+    font-size: 12px;
+  }
+
+  .status-app {
+    width: 54px;
+    height: 54px;
+    border-radius: 15px;
+  }
+
+  .status-app i {
+    font-size: 26px;
+  }
+
+  .playlist {
+    top: 92px;
+    left: 50%;
+    width: min(540px, calc(100vw - 24px));
+    max-height: 120px;
+    transform: translateX(-50%) translateY(-15px) scale(0.96);
+  }
+
+  .playlist.show {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  .about-bubble {
+    left: 50%;
+    top: calc(100% + 14px);
+    width: min(250px, calc(100vw - 40px));
+    transform: translateX(-50%) translateY(-8px) scale(0.96);
+  }
+
+  .avatar-wrap:hover .about-bubble,
+  .avatar-wrap.is-open .about-bubble {
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  .about-bubble::before {
+    left: 50%;
+    top: -7px;
+    transform: translateX(-50%) rotate(135deg);
+  }
+}
