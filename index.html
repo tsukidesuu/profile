@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>muadongTokyo</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+  <div id="intro">
+    <div class="noise"></div>
+    <div class="scanline"></div>
+
+    <div class="intro-content">
+      <p>Click anywhere to enter</p>
+    </div>
+  </div>
+  <video id="bg-video" class="bg-video" autoplay muted playsinline preload="auto">
+    <source src="assets/wallpaper.mp4" type="video/mp4">
+  </video>
+  <section class="music-player">
+    <img id="cover" class="cover" src="assets/cosmic-princess-kaguya.png" alt="cover">
+  
+    <div class="info">
+      <h3 id="song-title">Loading...</h3>
+      <p id="song-artist">Loading...</p>
+  
+      <div class="progress">
+        <span id="current">00:00</span>
+        <input type="range" id="seek" value="0" min="0">
+        <span id="duration">00:00</span>
+      </div>
+  
+      <div class="controls">
+        <button id="shuffle"><i class="fa-solid fa-shuffle"></i></button>
+        <button id="prev"><i class="fa-solid fa-backward-step"></i></button>
+        <button id="play"><i class="fa-solid fa-play"></i></button>
+        <button id="next"><i class="fa-solid fa-forward-step"></i></button>
+        <button id="loop"><i class="fa-solid fa-repeat"></i></button>
+        <button id="toggle-list"><i class="fa-solid fa-list"></i></button>
+        <div class="volume">
+          <i class="fa-solid fa-volume-high"></i>
+          <input type="range" id="volume" min="0" max="1" step="0.01" value="0.3">
+        </div>
+      </div>
+    </div>
+  
+    <audio id="audio"></audio>
+  </section>
+  
+  <ul class="playlist" id="playlist"></ul>
+  <main class="card">
+    <div class="grain"></div>
+    <img class="avatar" src="assets/avatar.jpg" alt="Tsuki avatar" onerror="this.style.display='none'" />
+
+    <h1>Tsuki</h1>
+
+    <div class="socials">
+      <a href="https://discord.com/users/919574876644343888/" target="_blank" aria-label="Discord">
+        <i class="fa-brands fa-discord"></i>
+      </a>
+      <a href="https://www.instagram.com/tsukiyeuem/" target="_blank" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://www.facebook.com/gcngaquyvungtokyo/" target="_blank" aria-label="Facebook">
+        <i class="fa-brands fa-facebook"></i>
+      </a>
+      <a href="https://www.tiktok.com/@tsukidapoet" target="_blank" aria-label="TikTok">
+        <i class="fa-brands fa-tiktok"></i>
+      </a>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
