@@ -244,3 +244,161 @@ document.addEventListener("visibilitychange", () => {
     }
   }
 });
+
+const DISCORD_ID = "919574876644343888";
+
+const statusText = {
+  online: "Online",
+  idle: "Idle",
+  dnd: "Do Not Disturb",
+  offline: "Offline"
+};
+
+const activityTypeText = {
+  0: "Playing",
+  1: "Streaming",
+  2: "Listening to",
+  3: "Watching",
+  4: "Custom Status",
+  5: "Competing"
+};
+
+function getDiscordAsset(activity, image) {
+  if (!image) return null;
+
+  if (image.startsWith("https://")) return image;
+
+  if (image.startsWith("spotify:")) {
+    return `https://i.scdn.co/image/${image.replace("spotify:", "")}`;
+  }
+
+  if (image.startsWith("mp:external/")) {
+    return `https://media.discordapp.net/external/${image.replace("mp:external/", "")}`;
+  }
+
+  if (activity.application_id) {
+    return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${image}.png`;
+  }
+
+  return null;
+}
+
+function pickActivity(data) {
+  if (data.spotify) {
+    return {
+      type: "Listening to",
+      name: data.spotify.song,
+      detail: data.spotify.artist,
+      image: data.spotify.album_art_url
+    };
+  }
+
+  const activity =
+    data.activities?.find(a => a.type === 0) ||
+    data.activities?.find(a => a.type !== 4) ||
+    data.activities?.find(a => a.type === 4);
+
+  if (!activity) {
+    return {
+      type: statusText[data.discord_status] || "Offline",
+      name: "Discord",
+      detail: "No activity",
+      image: null
+    };
+  }
+
+  const image =
+    getDiscordAsset(activity, activity.assets?.large_image) ||
+    getDiscordAsset(activity, activity.assets?.small_image);
+
+  return {
+    type: activityTypeText[activity.type] || "Playing",
+    name: activity.name || "Discord",
+    detail: activity.details || activity.state || "No details",
+    image
+  };
+}
+
+function renderLanyard(data) {
+  const user = data.discord_user;
+  const status = data.discord_status || "offline";
+  const activity = pickActivity(data);
+
+  document.getElementById("lanyardName").textContent =
+      "_tsukidesuu";
+
+  const dot = document.getElementById("lanyardDot");
+  dot.className = `presence ${status}`;
+
+  document.getElementById("activityType").textContent = activity.type;
+  document.getElementById("activityName").textContent = activity.name;
+  document.getElementById("activityDetail").textContent = activity.detail;
+
+  const iconBox = document.getElementById("activityIcon");
+
+  if (activity.image) {
+    iconBox.innerHTML = `<img src="${activity.image}" alt="activity icon">`;
+  } else {
+    iconBox.innerHTML = `<i class="fa-brands fa-discord"></i>`;
+  }
+}
+
+async function loadLanyardOnce() {
+  try {
+    const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+    const json = await res.json();
+
+    if (json.success) {
+      renderLanyard(json.data);
+    }
+  } catch (err) {
+    console.log("Lanyard REST lỗi:", err);
+  }
+}
+
+function connectLanyardSocket() {
+  const socket = new WebSocket("wss://api.lanyard.rest/socket");
+
+  let heartbeat = null;
+
+  socket.addEventListener("message", event => {
+    const packet = JSON.parse(event.data);
+
+    if (packet.op === 1) {
+      socket.send(JSON.stringify({
+        op: 2,
+        d: {
+          subscribe_to_id: DISCORD_ID
+        }
+      }));
+
+      heartbeat = setInterval(() => {
+        socket.send(JSON.stringify({ op: 3 }));
+      }, packet.d.heartbeat_interval);
+    }
+
+    if (packet.t === "INIT_STATE") {
+      renderLanyard(packet.d);
+    }
+
+    if (packet.t === "PRESENCE_UPDATE") {
+      renderLanyard(packet.d);
+    }
+  });
+
+  socket.addEventListener("close", () => {
+    if (heartbeat) clearInterval(heartbeat);
+
+    setTimeout(() => {
+      connectLanyardSocket();
+    }, 3000);
+  });
+
+  socket.addEventListener("error", err => {
+    console.log("Lanyard WebSocket lỗi:", err);
+    socket.close();
+  });
+}
+
+loadLanyardOnce();
+connectLanyardSocket();
