@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>muadongTokyo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,9 +57,7 @@
   <main class="card">
     <div class="grain"></div>
     <img class="avatar" src="assets/avatar.jpg" alt="Tsuki avatar" onerror="this.style.display='none'" />
-
-    <h1>Tsuki</h1>
-
+    <h1 class="profile-name">Tsuki</h1>
     <div class="socials">
       <a href="https://discord.com/users/919574876644343888/" target="_blank" aria-label="Discord">
         <i class="fa-brands fa-discord"></i>
@@ -72,7 +71,38 @@
       <a href="https://www.tiktok.com/@tsukidapoet" target="_blank" aria-label="TikTok">
         <i class="fa-brands fa-tiktok"></i>
       </a>
+      <a href="https://open.spotify.com/playlist/5lfOwVcnnZfgSoqzjHx7hM" target="_blank" aria-label="Spotify Playlist">
+        <i class ="fa-brands fa-spotify"></i>
+      </a>
     </div>
+
+    <section class="status-bar">
+        <div class="status-left">
+          <div class="status-top">
+            <span class="status-name" id="lanyardName">_tsukidesuu</span>
+    
+            <span class="status-tag-img">
+              <img src="assets/cpk-tag.png" alt="CPK">
+              <span>CPK!</span>
+            </span>
+    
+            <span class="presence offline" id="lanyardDot"></span>
+          </div>
+    
+          <div class="status-main">
+            <span id="activityType">Offline</span>
+            <span id="activityName">Discord</span>
+          </div>
+    
+          <div class="status-sub" id="activityDetail">
+            No activity
+          </div>
+        </div>
+    
+        <div class="status-app" id="activityIcon">
+          <i class="fa-brands fa-discord"></i>
+        </div>
+      </section>
   </main>
   <script src="script.js"></script>
 </body>
