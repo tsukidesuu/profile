@@ -1,0 +1,507 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #050505;
+  font-family: Arial, sans-serif;
+}
+
+body.wallpaper-ended {
+  background: #050505 url("assets/wallpaper.webp") center / cover no-repeat;
+}
+
+.card {
+  position: relative;
+  z-index: 2;
+  width: min(100vw, 1920px);
+  height: min(100vh, 960px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  background: rgba(0,0,0,0.55);
+
+  transition:
+    background 1.5s ease,
+    backdrop-filter 1.5s ease;
+
+  backdrop-filter: blur(2px);
+}
+
+body.wallpaper-ended .card::before {
+  background: rgba(0,0,0,0.15);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.wallpaper-ended .card {
+  filter: brightness(1.15) saturate(1.1);
+}
+
+.avatar {
+  position: relative;
+  z-index: 2;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+}
+
+h1 {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(58px, 6vw, 86px);
+  font-weight: 600;
+  letter-spacing: -5px;
+  line-height: 1;
+  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.8);
+}
+
+.socials {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.socials a {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.socials a:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.socials i {
+  font-size: 20px;
+}
+
+.music-player {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 10;
+  width: min(540px, 92vw);
+  padding: 14px;
+  display: flex;
+  gap: 14px;
+  color: white;
+  border-radius: 18px;
+  background: rgba(15, 15, 22, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45);
+}
+
+.cover {
+  width: 82px;
+  height: 82px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.info p {
+  color: #c7c7c7;
+  font-size: 12px;
+  margin: 5px 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #e5e5e5;
+}
+
+#seek {
+  flex: 1;
+  height: 4px;
+  accent-color: white;
+  cursor: pointer;
+}
+
+.controls {
+  margin-top: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+}
+
+.controls button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.controls button:hover {
+  transform: scale(1.12);
+  opacity: 1;
+}
+
+.playlist {
+  position: fixed;
+  top: 150px;
+  left: 24px;
+  z-index: 10;
+
+  width: min(540px, 92vw);
+  max-height: 158px;
+  overflow-y: auto;
+
+  padding: 8px;
+  padding-right: 10px;
+
+  border-radius: 18px;
+  background: rgba(15,15,22,.72);
+  backdrop-filter: blur(18px);
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-15px) scale(0.96);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s ease;
+}
+
+.playlist::-webkit-scrollbar {
+  width: 6px;
+}
+
+.playlist::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+}
+
+.playlist::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.28);
+  border-radius: 999px;
+}
+
+.playlist::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.45);
+}
+
+.playlist.show {
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.45),
+    0 0 30px rgba(255,255,255,.05);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.playlist li {
+  padding: 10px 12px;
+  border-radius: 11px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.playlist li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.playlist li span {
+  display: block;
+  color: #bdbdbd;
+  font-size: 12px;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playlist li.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #00ff84;
+}
+
+.playlist li.active span {
+  color: #d8d8d8;
+}
+
+@media (max-width: 600px) {
+  .card {
+    height: 100vh;
+    border-radius: 0;
+    padding: 24px 12px;
+  }
+
+  .avatar {
+    width: 82px;
+    height: 82px;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 58px;
+    letter-spacing: -3px;
+  }
+
+  .socials {
+    margin-top: 24px;
+  }
+
+  .socials a {
+    width: 39px;
+    height: 39px;
+  }
+
+  .music-player {
+    margin-top: 24px;
+  }
+
+  .cover {
+    width: 72px;
+    height: 72px;
+  }
+
+  .controls {
+    gap: 18px;
+  }
+
+  .playlist {
+    max-height: 170px;
+  }
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 22px;
+  margin-left: 4px;
+}
+
+.volume i {
+  font-size: 14px;
+  line-height: 1;
+  transform: translateY(0.5px);
+}
+
+#volume {
+  width: 90px;
+  height: 4px;
+  accent-color: white;
+  cursor: pointer;
+}
+
+.controls button.active-loop,
+.controls button.active-loop i,
+.controls button.active-loop .loop-one-icon,
+.controls button.active-loop .loop-one-icon i {
+  color: #1ed760 !important;
+}
+
+.loop-one-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.loop-one-icon small {
+  position: absolute;
+  top: 3px;
+  right: -7px;
+  width: 10px;
+  height: 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #1ed760;
+  color: black;
+  font-size: 7px;
+  font-weight: bold;
+}
+
+.bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #050505 url("assets/wallpaper.webp") center / cover no-repeat;
+  font-family: Arial, sans-serif;
+}
+
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #020202;
+  cursor: pointer;
+  overflow: hidden;
+  transition: opacity .8s ease;
+}
+
+#intro.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.noise {
+  position: absolute;
+  inset: -50%;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.9) 1px, transparent 1px);
+  background-size: 3px 3px;
+  opacity: .18;
+  animation: noiseMove .12s infinite linear;
+}
+
+@keyframes noiseMove {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-12px, 8px); }
+  40% { transform: translate(10px, -14px); }
+  60% { transform: translate(-8px, 12px); }
+  80% { transform: translate(14px, -6px); }
+  100% { transform: translate(0, 0); }
+}
+
+.scanline {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.08) 0px,
+    rgba(255,255,255,.08) 1px,
+    transparent 2px,
+    transparent 5px
+  );
+  opacity: .35;
+  pointer-events: none;
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  animation: glitchShake .9s infinite;
+}
+
+.intro-content h2 {
+  font-family: "Comic Sans MS", "Trebuchet MS", cursive;
+  font-size: clamp(72px, 12vw, 160px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: white;
+  text-shadow:
+    4px 4px 0 #ff4fd8,
+    -4px -4px 0 #00eaff,
+    0 0 30px rgba(255,255,255,.8);
+}
+
+.intro-content p {
+  margin-top: 14px;
+  font-family: "Comic Sans MS", "Trebuchet MS", cursive;
+  font-size: clamp(22px, 3vw, 38px);
+  font-weight: 700;
+  color: white;
+  text-shadow:
+    2px 2px 0 #ff4fd8,
+    -2px -2px 0 #00eaff;
+  animation: blinkText .8s infinite alternate;
+}
+
+@keyframes glitchShake {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, -2px); }
+  80% { transform: translate(1px, 2px); }
+}
+
+@keyframes blinkText {
+  from { opacity: .55; }
+  to { opacity: 1; }
+}
+
+.bg-video,
+.card,
+.music-player,
+.playlist {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.loaded .card,
+.loaded .music-player {
+  opacity: 1;
+}
