@@ -402,3 +402,36 @@ function connectLanyardSocket() {
 
 loadLanyardOnce();
 connectLanyardSocket();
+
+const BIRTH_DATE = new Date(2010, 1, 22);
+
+function calculateAge(birthDate) {
+  const now = new Date();
+
+  let years = now.getFullYear() - birthDate.getFullYear();
+  let months = now.getMonth() - birthDate.getMonth();
+  let days = now.getDate() - birthDate.getDate();
+
+  if (days < 0) {
+    const previousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += previousMonth.getDate();
+    months--;
+  }
+
+  if (months < 0) {
+    months += 12;
+    years--;
+  }
+
+  return `${years}`;
+}
+
+function updateAge() {
+  const ageText = document.getElementById("ageText");
+  if (!ageText) return;
+
+  ageText.textContent = calculateAge(BIRTH_DATE);
+}
+
+updateAge();
+setInterval(updateAge, 1000 * 60 * 60);
