@@ -632,20 +632,28 @@ body {
 }
 
 .status-app {
-  width: 70px;
-  height: 70px;
-  flex-shrink: 0;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 18px;
-  background: rgba(12, 20, 28, 0.86);
+  width: 92px;
+  height: 92px;
+  border-radius: 8px;
   overflow: hidden;
+  background: transparent;
+  box-shadow: none;
+}
 
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.04),
-    0 8px 24px rgba(0,0,0,0.25);
+.status-app img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+  display: block;
+}
+
+.status-app img[src*="roblox"],
+.status-app img[src*="valorant"] {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
 }
 
 .status-app i {
@@ -653,18 +661,6 @@ body {
   font-size: 34px;
 }
 
-.status-app img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.status-app img[src*="roblox"],
-.status-app img[src*="valorant"] {
-  width: 85%;
-  height: 85%;
-  object-fit: cover;
-}
 
 @media (max-width: 700px) {
   .status-bar {
@@ -998,8 +994,8 @@ body {
   }
 
   .status-app {
-    width: 54px;
-    height: 54px;
+    width: 65px;
+    height: 65px;
     border-radius: 15px;
   }
 
@@ -1041,4 +1037,42 @@ body {
 .presence.do_not_disturb {
   background: #f23f43;
   box-shadow: 0 0 0 4px rgba(242,63,67,0.18);
+}
+
+.status-app {
+  border-radius: 6px !important;
+}
+
+.status-app img {
+  border-radius: 4px !important;
+}
+
+.status-sub,
+#activityName {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.status-sub .bounce-text,
+#activityName .bounce-text {
+  display: inline-block;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.status-sub.is-bounce .bounce-text,
+#activityName.is-bounce .bounce-text {
+  animation: statusTextBounce var(--bounce-duration, 7s) ease-in-out infinite alternate;
+}
+
+@keyframes statusTextBounce {
+  0%,
+  15% {
+    transform: translateX(0);
+  }
+
+  85%,
+  100% {
+    transform: translateX(calc(-1 * var(--bounce-distance)));
+  }
 }

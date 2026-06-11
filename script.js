@@ -434,6 +434,36 @@ function pickActivity(data) {
   };
 }
 
+function setBouncingText(elementId, text) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  el.classList.remove("is-bounce");
+  el.style.removeProperty("--bounce-distance");
+  el.style.removeProperty("--bounce-duration");
+
+  el.textContent = "";
+
+  const span = document.createElement("span");
+  span.className = "bounce-text";
+  span.textContent = text || "";
+
+  el.appendChild(span);
+
+  requestAnimationFrame(() => {
+    const distance = span.scrollWidth - el.clientWidth;
+
+    if (distance > 4) {
+      el.style.setProperty("--bounce-distance", `${distance}px`);
+
+      const duration = Math.min(12, Math.max(5, distance / 18));
+      el.style.setProperty("--bounce-duration", `${duration}s`);
+
+      el.classList.add("is-bounce");
+    }
+  });
+}
+
 function renderLanyard(data) {
   console.log("LANYARD STATUS:", data.discord_status, data);
   const user = data.discord_user;
@@ -447,7 +477,7 @@ function renderLanyard(data) {
   dot.className = `presence ${status}`;
 
   document.getElementById("activityType").textContent = activity.type;
-  document.getElementById("activityName").textContent = activity.name;
+  setBouncingText("activityName", activity.name);
   if (activity.gameKey) {
     const isSameGame =
       currentGameKey === activity.gameKey &&
@@ -458,7 +488,7 @@ function renderLanyard(data) {
     }
   } else {
     stopGameTimer();
-    document.getElementById("activityDetail").textContent = activity.detail;
+    setBouncingText("activityDetail", activity.detail);
   }
 
   const iconBox = document.getElementById("activityIcon");
