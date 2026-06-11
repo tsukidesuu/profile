@@ -659,6 +659,13 @@ body {
   object-fit: cover;
 }
 
+.status-app img[src*="roblox"],
+.status-app img[src*="valorant"] {
+  width: 85%;
+  height: 85%;
+  object-fit: cover;
+}
+
 @media (max-width: 700px) {
   .status-bar {
     width: min(360px, calc(100vw - 32px));
@@ -1029,4 +1036,9 @@ body {
     top: -7px;
     transform: translateX(-50%) rotate(135deg);
   }
+}
+
+.presence.do_not_disturb {
+  background: #f23f43;
+  box-shadow: 0 0 0 4px rgba(242,63,67,0.18);
 }

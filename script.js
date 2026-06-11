@@ -283,43 +283,159 @@ function getDiscordAsset(activity, image) {
   return null;
 }
 
+const manualActivityIcons = {
+  roblox: "assets/roblox.png",
+  valorant: "assets/valorant.png"
+};
+
+let currentGameKey = null;
+let currentGameStartedAt = null;
+let currentGameBaseDetail = null;
+let gameTimerInterval = null;
+
+function getGameKey(name = "") {
+  const key = name.toLowerCase();
+
+  if (key.includes("roblox")) return "roblox";
+  if (key.includes("valorant")) return "valorant";
+
+  return null;
+}
+
+function getManualActivityIcon(name = "") {
+  const gameKey = getGameKey(name);
+
+  if (gameKey && manualActivityIcons[gameKey]) {
+    return manualActivityIcons[gameKey];
+  }
+
+  return null;
+}
+
+function getGameBaseDetail(name = "") {
+  const gameKey = getGameKey(name);
+
+  if (gameKey === "roblox") return "In game";
+  if (gameKey === "valorant") return "In match";
+
+  return "Active now";
+}
+
+function formatRunningTime(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function startGameTimer(gameKey, startedAt, baseDetail) {
+  currentGameKey = gameKey;
+  currentGameStartedAt = startedAt || Date.now();
+  currentGameBaseDetail = baseDetail;
+
+  if (gameTimerInterval) {
+    clearInterval(gameTimerInterval);
+  }
+
+  function updateTimerText() {
+    const activityDetail = document.getElementById("activityDetail");
+    if (!activityDetail || !currentGameStartedAt) return;
+
+    const elapsed = formatRunningTime(Date.now() - currentGameStartedAt);
+    activityDetail.textContent = `${currentGameBaseDetail} • ${elapsed}`;
+  }
+
+  updateTimerText();
+
+  gameTimerInterval = setInterval(updateTimerText, 1000);
+}
+
+function stopGameTimer() {
+  currentGameKey = null;
+  currentGameStartedAt = null;
+  currentGameBaseDetail = null;
+
+  if (gameTimerInterval) {
+    clearInterval(gameTimerInterval);
+    gameTimerInterval = null;
+  }
+}
+
 function pickActivity(data) {
   if (data.spotify) {
+    stopGameTimer();
+
     return {
       type: "Listening to",
       name: data.spotify.song,
       detail: data.spotify.artist,
-      image: data.spotify.album_art_url
+      image: data.spotify.album_art_url,
+      gameKey: null,
+      startedAt: null
     };
   }
 
   const activity =
+    data.activities?.find(a => getGameKey(a.name)) ||
     data.activities?.find(a => a.type === 0) ||
     data.activities?.find(a => a.type !== 4) ||
     data.activities?.find(a => a.type === 4);
 
   if (!activity) {
+    stopGameTimer();
+
     return {
       type: statusText[data.discord_status] || "Offline",
       name: "Discord",
       detail: "No activity",
-      image: null
+      image: null,
+      gameKey: null,
+      startedAt: null
     };
   }
 
-  const image =
+  const discordImage =
     getDiscordAsset(activity, activity.assets?.large_image) ||
     getDiscordAsset(activity, activity.assets?.small_image);
+
+  const manualImage = getManualActivityIcon(activity.name);
+  const gameKey = getGameKey(activity.name);
+
+  let detail = activity.details || activity.state;
+
+  if (!detail || detail === "No details") {
+    detail = getGameBaseDetail(activity.name);
+  }
+
+  let startedAt = null;
+
+  if (activity.timestamps?.start) {
+    startedAt = new Date(activity.timestamps.start).getTime();
+  }
+
+  if (gameKey && !startedAt) {
+    startedAt = Date.now();
+  }
 
   return {
     type: activityTypeText[activity.type] || "Playing",
     name: activity.name || "Discord",
-    detail: activity.details || activity.state || "No details",
-    image
+    detail,
+    image: discordImage || manualImage,
+    gameKey,
+    startedAt
   };
 }
 
 function renderLanyard(data) {
+  console.log("LANYARD STATUS:", data.discord_status, data);
   const user = data.discord_user;
   const status = data.discord_status || "offline";
   const activity = pickActivity(data);
@@ -332,7 +448,18 @@ function renderLanyard(data) {
 
   document.getElementById("activityType").textContent = activity.type;
   document.getElementById("activityName").textContent = activity.name;
-  document.getElementById("activityDetail").textContent = activity.detail;
+  if (activity.gameKey) {
+    const isSameGame =
+      currentGameKey === activity.gameKey &&
+      currentGameStartedAt;
+
+    if (!isSameGame) {
+      startGameTimer(activity.gameKey, activity.startedAt, activity.detail);
+    }
+  } else {
+    stopGameTimer();
+    document.getElementById("activityDetail").textContent = activity.detail;
+  }
 
   const iconBox = document.getElementById("activityIcon");
 
